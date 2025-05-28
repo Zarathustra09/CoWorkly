@@ -20,5 +20,12 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
             'password' => 'Test@123',
         ]);
+
+
+        $this->call([
+            WorkSpaceCategorySeeder::class,
+            WorkSpaceSeeder::class,
+            // Add other seeders here as needed
+        ]);
     }
 }
