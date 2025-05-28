@@ -10,11 +10,21 @@ class WorkSpaceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
+        $query = WorkSpace::with('category')->where('is_available', true);
 
+        // Apply category filter if provided
+        if ($request->has('category')) {
+            $query->where('category_id', $request->category);
+        }
+
+        $workspaces = $query->orderBy('is_premium', 'desc')
+            ->orderBy('name', 'asc')
+            ->paginate(9);
+
+        return view('admin.booking.index', compact('workspaces'));
+    }
     /**
      * Show the form for creating a new resource.
      */

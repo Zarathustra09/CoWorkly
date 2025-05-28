@@ -17,7 +17,7 @@
                         <ul class="menu-inner py-4">
                             <!-- Dashboard -->
                             <li class="menu-item {{ request()->routeIs('home') ? 'active' : '' }}">
-                                <a href="javascript:void(0);" class="menu-link">
+                                <a href="{{route('home')}}" class="menu-link">
                                     <i class="menu-icon tf-icons bx bx-home-alt"></i>
                                     <div data-i18n="Dashboard">Dashboard</div>
                                 </a>
@@ -26,8 +26,8 @@
 
                             <li class="menu-header small text-uppercase"><span class="menu-header-text">Booking Management</span></li>
 
-                         <li class="menu-item {{ request()->routeIs('bookings.create') ? 'active' : '' }}">
-                             <a href="javascript:void(0);" class="menu-link">
+                         <li class="menu-item {{ request()->routeIs('workspace.index') ? 'active' : '' }}">
+                             <a href="{{route('workspace.index')}}" class="menu-link">
                                  <i class="menu-icon tf-icons bx bx-calendar-plus"></i>
                                  <div data-i18n="Book a Workspace">Book a Workspace</div>
                              </a>

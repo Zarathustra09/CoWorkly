@@ -33,7 +33,7 @@ class WorkSpaceSeeder extends Seeder
                 'daily_rate' => 3000,
                 'is_available' => true,
                 'is_premium' => true,
-                'images' => json_encode(['private-desk1.jpg', 'private-desk2.jpg']),
+                'images' => json_encode(['single-coworking-space.png', 'single-coworking-space-b.png', 'single-coworking-space-c.png']),
                 'equipment' => json_encode(['ergonomic chair', 'large desk', 'desk lamp']),
             ],
             [
@@ -48,7 +48,7 @@ class WorkSpaceSeeder extends Seeder
                 'daily_rate' => 500,
                 'is_available' => true,
                 'is_premium' => false,
-                'images' => json_encode(['study-pod1.jpg', 'study-pod2.jpg']),
+                'images' => json_encode(['single-coworking-capsule.png', 'single-coworking-capsule-b.png', 'single-coworking-capsule-c.png']),
                 'equipment' => json_encode(['desk lamp', 'standard chair']),
             ],
             [
@@ -63,7 +63,7 @@ class WorkSpaceSeeder extends Seeder
                 'daily_rate' => 400,
                 'is_available' => true,
                 'is_premium' => false,
-                'images' => json_encode(['hot-desk1.jpg', 'hot-desk2.jpg']),
+                'images' => json_encode(['single-coworking-cubicle.png', 'single-coworking-space-c.png']),
                 'equipment' => json_encode(['standard chair', 'shared table space']),
             ],
             [
@@ -78,7 +78,7 @@ class WorkSpaceSeeder extends Seeder
                 'daily_rate' => 1000,
                 'is_available' => true,
                 'is_premium' => true,
-                'images' => json_encode(['meeting-room1.jpg', 'meeting-room2.jpg']),
+                'images' => json_encode(['coworking-group-space.png', 'coworking-group-space-b.png', 'coworking-group-space-c.png']),
                 'equipment' => json_encode(['conference table', 'chairs', 'projector', 'whiteboard']),
             ],
             [
@@ -93,7 +93,7 @@ class WorkSpaceSeeder extends Seeder
                 'daily_rate' => 425,
                 'is_available' => true,
                 'is_premium' => false,
-                'images' => json_encode(['student-plan1.jpg']),
+                'images' => json_encode(['coworking-group-space-capsule.png', 'single-coworking-capsule-b.png']),
                 'equipment' => json_encode(['desk', 'chair', 'desk lamp']),
             ],
 
@@ -109,7 +109,7 @@ class WorkSpaceSeeder extends Seeder
                 'daily_rate' => 200,
                 'is_available' => true,
                 'is_premium' => false,
-                'images' => json_encode(['daily-plan.jpg']),
+                'images' => json_encode(['single-coworking-space.png']),
                 'equipment' => json_encode(['standard chair', 'shared desk space']),
             ],
             [
@@ -123,7 +123,7 @@ class WorkSpaceSeeder extends Seeder
                 'daily_rate' => 800,
                 'is_available' => true,
                 'is_premium' => false,
-                'images' => json_encode(['weekly-plan.jpg']),
+                'images' => json_encode(['single-coworking-space-b.png']),
                 'equipment' => json_encode(['standard chair', 'shared desk space', 'meeting room equipment']),
             ],
             [
@@ -137,7 +137,7 @@ class WorkSpaceSeeder extends Seeder
                 'daily_rate' => 3000,
                 'is_available' => true,
                 'is_premium' => true,
-                'images' => json_encode(['monthly-plan.jpg']),
+                'images' => json_encode(['single-coworking-space-c.png', 'coworking-group-space-d.png']),
                 'equipment' => json_encode(['standard chair', 'shared desk space', 'locker', 'meeting room equipment']),
             ],
             [
@@ -151,7 +151,7 @@ class WorkSpaceSeeder extends Seeder
                 'daily_rate' => 2200,
                 'is_available' => true,
                 'is_premium' => false,
-                'images' => json_encode(['student-monthly.jpg']),
+                'images' => json_encode(['single-coworking-capsule.png']),
                 'equipment' => json_encode(['desk', 'chair', 'desk lamp']),
             ],
             [
@@ -165,7 +165,7 @@ class WorkSpaceSeeder extends Seeder
                 'daily_rate' => 1500,
                 'is_available' => true,
                 'is_premium' => false,
-                'images' => json_encode(['flex-plan.jpg']),
+                'images' => json_encode(['single-coworking-cubicle.png']),
                 'equipment' => json_encode(['standard chair', 'shared desk space']),
             ],
 
@@ -181,7 +181,7 @@ class WorkSpaceSeeder extends Seeder
                 'daily_rate' => 2400,
                 'is_available' => true,
                 'is_premium' => false,
-                'images' => json_encode(['group-study.jpg']),
+                'images' => json_encode(['coworking-group-space.png', 'coworking-group-space-capsule.png']),
                 'equipment' => json_encode(['large table', 'chairs', 'whiteboard', 'markers']),
             ],
             [
@@ -195,7 +195,7 @@ class WorkSpaceSeeder extends Seeder
                 'daily_rate' => 7500,
                 'is_available' => true,
                 'is_premium' => true,
-                'images' => json_encode(['startup-team.jpg']),
+                'images' => json_encode(['coworking-group-space-b.png', 'coworking-group-space-c.png', 'coworking-group-space-d.png']),
                 'equipment' => json_encode(['conference table', 'chairs', 'whiteboards', '3 lockers']),
             ],
         ];
