@@ -1,8 +1,8 @@
 <nav class="navbar navbar-expand-lg">
                     <div class="container">
                         <a class="navbar-brand" href="{{ url('/') }}">
-                            <i class="bi-back"></i>
-                            <span>{{env('APP_NAME')}}</span>
+                            <img src="{{ asset('coworkly.png') }}" alt="Coworkly Logo" class="app-brand-logo" width="75">
+                            <span class="text-white">{{env('APP_NAME')}}</span>
                         </a>
 
                         <div class="d-lg-none ms-auto me-4">
