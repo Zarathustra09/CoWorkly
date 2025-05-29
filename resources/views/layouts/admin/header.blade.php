@@ -26,8 +26,8 @@
 
                             <li class="menu-header small text-uppercase"><span class="menu-header-text">Booking Management</span></li>
 
-                         <li class="menu-item {{ request()->routeIs('workspace.index') ? 'active' : '' }}">
-                             <a href="{{route('workspace.index')}}" class="menu-link">
+                         <li class="menu-item {{ request()->routeIs('booking.index') ? 'active' : '' }}">
+                             <a href="{{route('bookings.index')}}" class="menu-link">
                                  <i class="menu-icon tf-icons bx bx-calendar-plus"></i>
                                  <div data-i18n="Book a Workspace">Book a Workspace</div>
                              </a>
