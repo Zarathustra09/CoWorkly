@@ -15,6 +15,8 @@
                     'booking_type',
                     'total_cost',
                     'status',
+                    'payment_method',
+                    'payment_reference',
                 ];
 
                 protected $casts = [

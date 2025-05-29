@@ -70,107 +70,111 @@
         /**
          * Store a newly created booking in storage.
          */
-     public function store(Request $request)
-     {
-         try {
-             // Customize validation
-             $rules = [
-                 'workspace_id' => 'required|exists:workspaces,id',
-                 'start_datetime' => 'required|date',
-                 'end_datetime' => 'required|date',
-                 'booking_type' => 'required|in:hourly,daily',
-                 'total_cost' => 'required|numeric|min:0',
-             ];
+        /**
+         * Store a newly created booking in storage.
+         */
+        public function store(Request $request)
+        {
+            try {
+                // Customize validation
+                $rules = [
+                    'workspace_id' => 'required|exists:workspaces,id',
+                    'start_datetime' => 'required|date',
+                    'end_datetime' => 'required|date',
+                    'booking_type' => 'required|in:hourly,daily',
+                    'total_cost' => 'required|numeric|min:0',
+                ];
 
-             // First validate the basic rules
-             $validator = \Illuminate\Support\Facades\Validator::make($request->all(), $rules);
+                // First validate the basic rules
+                $validator = \Illuminate\Support\Facades\Validator::make($request->all(), $rules);
 
-             // If basic validation fails
-             if ($validator->fails()) {
-                 Log::warning('Basic booking validation failed', [
-                     'errors' => $validator->errors(),
-                     'input' => $request->except(['_token'])
-                 ]);
-                 return redirect()->back()->withErrors($validator)->withInput();
-             }
+                // If basic validation fails
+                if ($validator->fails()) {
+                    Log::warning('Basic booking validation failed', [
+                        'errors' => $validator->errors(),
+                        'input' => $request->except(['_token'])
+                    ]);
+                    return redirect()->back()->withErrors($validator)->withInput();
+                }
 
-             // Get the validated data
-             $validated = $validator->validated();
+                // Get the validated data
+                $validated = $validator->validated();
 
-             // Log the datetime values for debugging
-             Log::info('Booking datetime values', [
-                 'start_datetime' => $validated['start_datetime'],
-                 'end_datetime' => $validated['end_datetime'],
-                 'booking_type' => $validated['booking_type']
-             ]);
+                // Log the datetime values for debugging
+                Log::info('Booking datetime values', [
+                    'start_datetime' => $validated['start_datetime'],
+                    'end_datetime' => $validated['end_datetime'],
+                    'booking_type' => $validated['booking_type']
+                ]);
 
-             // Get Carbon instances for comparison
-             $startDatetime = \Carbon\Carbon::parse($validated['start_datetime']);
-             $endDatetime = \Carbon\Carbon::parse($validated['end_datetime']);
+                // Get Carbon instances for comparison
+                $startDatetime = \Carbon\Carbon::parse($validated['start_datetime']);
+                $endDatetime = \Carbon\Carbon::parse($validated['end_datetime']);
 
-             // Force the times: start time to 9am, end time to 5pm
-             $startDatetime->setTime(9, 0, 0);
-             $endDatetime->setTime(17, 0, 0);
+                // Force the times: start time to 9am, end time to 5pm
+                $startDatetime->setTime(9, 0, 0);
+                $endDatetime->setTime(17, 0, 0);
 
-             // Update the validated data with the corrected times
-             $validated['start_datetime'] = $startDatetime->toDateTimeString();
-             $validated['end_datetime'] = $endDatetime->toDateTimeString();
+                // Update the validated data with the corrected times
+                $validated['start_datetime'] = $startDatetime->toDateTimeString();
+                $validated['end_datetime'] = $endDatetime->toDateTimeString();
 
-             // Recalculate total cost based on corrected times
-             $workspace = \App\Models\WorkSpace::find($validated['workspace_id']);
-             $diffDays = $startDatetime->diffInDays($endDatetime) + 1;
+                // Recalculate total cost based on corrected times
+                $workspace = \App\Models\WorkSpace::find($validated['workspace_id']);
+                $diffDays = $startDatetime->diffInDays($endDatetime) + 1;
 
-             if ($validated['booking_type'] === 'hourly') {
-                 // 8 hours per day (9am - 5pm)
-                 $totalHours = $diffDays * 8;
-                 $validated['total_cost'] = $workspace->hourly_rate * $totalHours;
-             } else {
-                 $validated['total_cost'] = $workspace->daily_rate * $diffDays;
-             }
+                if ($validated['booking_type'] === 'hourly') {
+                    // 8 hours per day (9am - 5pm)
+                    $totalHours = $diffDays * 8;
+                    $validated['total_cost'] = $workspace->hourly_rate * $totalHours;
+                } else {
+                    $validated['total_cost'] = $workspace->daily_rate * $diffDays;
+                }
 
-             // Check if the dates make sense (end date should be >= start date)
-             if ($endDatetime < $startDatetime) {
-                 Log::warning('End date is before start date', [
-                     'start_datetime' => $validated['start_datetime'],
-                     'end_datetime' => $validated['end_datetime']
-                 ]);
-                 return redirect()->back()
-                     ->withErrors(['end_datetime' => 'End date cannot be before start date'])
-                     ->withInput();
-             }
+                // Check if the dates make sense (end date should be >= start date)
+                if ($endDatetime < $startDatetime) {
+                    Log::warning('End date is before start date', [
+                        'start_datetime' => $validated['start_datetime'],
+                        'end_datetime' => $validated['end_datetime']
+                    ]);
+                    return redirect()->back()
+                        ->withErrors(['end_datetime' => 'End date cannot be before start date'])
+                        ->withInput();
+                }
 
-             // Add the user ID
-             $validated['user_id'] = auth()->id();
-             $validated['status'] = 'pending';
+                // Add the user ID
+                $validated['user_id'] = auth()->id();
+                $validated['status'] = 'pending';
 
-             // Create the booking
-             $booking = auth()->user()->bookings()->create($validated);
+                // Create the booking
+                $booking = auth()->user()->bookings()->create($validated);
 
-             Log::info('Booking created successfully', [
-                 'booking_id' => $booking->id,
-                 'user_id' => auth()->id(),
-                 'workspace_id' => $validated['workspace_id'],
-                 'final_start' => $validated['start_datetime'],
-                 'final_end' => $validated['end_datetime']
-             ]);
+                Log::info('Booking created successfully', [
+                    'booking_id' => $booking->id,
+                    'user_id' => auth()->id(),
+                    'workspace_id' => $validated['workspace_id'],
+                    'final_start' => $validated['start_datetime'],
+                    'final_end' => $validated['end_datetime']
+                ]);
 
-             return redirect()->route('bookings.show', $booking)
-                 ->with('success', 'Booking created successfully!');
+                // Redirect to checkout instead of booking.show
+                return redirect()->route('checkout.show', $booking)
+                    ->with('success', 'Booking created! Please complete payment to confirm.');
 
-         } catch (\Exception $e) {
-             Log::error('Error creating booking: ' . $e->getMessage(), [
-                 'file' => $e->getFile(),
-                 'line' => $e->getLine(),
-                 'trace' => $e->getTraceAsString(),
-                 'user_id' => auth()->id(),
-                 'input' => $request->except(['_token'])
-             ]);
+            } catch (\Exception $e) {
+                Log::error('Error creating booking: ' . $e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                    'user_id' => auth()->id(),
+                    'input' => $request->except(['_token'])
+                ]);
 
-             return redirect()->back()
-                 ->with('error', 'Unable to complete your booking: ' . $e->getMessage())
-                 ->withInput();
-         }
-     }
+                return redirect()->back()
+                    ->with('error', 'Unable to complete your booking: ' . $e->getMessage())
+                    ->withInput();
+            }
+        }
 
         /**
          * Display the specified booking.

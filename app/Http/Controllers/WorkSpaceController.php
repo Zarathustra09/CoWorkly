@@ -11,37 +11,11 @@
         /**
          * Display a listing of the resource.
          */
-        public function index(Request $request)
+        public function index()
         {
-            $query = WorkSpace::with('category')->where('is_available', true);
+            // Eager load the workspace and category relations to avoid N+1 query issues
+            $user = auth()->user()->load(['bookings.workspace.category']);
 
-            // Apply category filter if provided
-            if ($request->has('category')) {
-                $query->where('category_id', $request->category);
-            }
-
-            // Apply type filter if provided
-            if ($request->has('type')) {
-                $query->where('type', $request->type);
-            }
-
-            $workspaces = $query->orderBy('name', 'asc')
-                ->paginate(9);
-
-            $categories = WorkSpaceCategory::all();
-
-            return view('admin.booking.index', compact('workspaces', 'categories'));
+            return view('admin.workspace.index', compact('user'));
         }
-
-        /**
-         * Show the form for booking a workspace.
-         */
-        public function booking(WorkSpace $workspace)
-        {
-            return view('admin.booking.create', compact('workspace'));
-        }
-
-        /**
-         * Other methods remain the same...
-         */
     }
