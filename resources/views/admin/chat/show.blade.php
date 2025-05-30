@@ -1,419 +1,435 @@
 @extends('layouts.admin.app')
 
-@section('content')
-    <div class="container py-4">
-        <div class="row">
-            <!-- Chat sidebar - users list -->
-            <div class="col-md-3">
-                <div class="card shadow-sm mb-3">
-                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0">
-                            <i class="bi bi-people-fill me-2"></i>Chat Members
-                        </h5>
-                        @if(Auth::id() === $booking->user_id)
-                           <button type="button" id="addUserBtn" class="btn btn-sm btn-light">
-                               <i class="bx bx-plus"></i>
-                           </button>
-                        @endif
-                    </div>
-                    <div class="card-body p-0">
-                        <ul class="list-group list-group-flush">
-                            @foreach($chatUsers as $chatUser)
-                                <li class="list-group-item d-flex align-items-center">
-                                    @if($chatUser->profile_image)
-                                        <img src="{{ asset('storage/profile_images/' . $chatUser->profile_image) }}"
-                                             class="rounded-circle me-2" width="32" height="32" alt="{{ $chatUser->name }}">
-                                    @else
-                                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center me-2"
-                                             style="width: 32px; height: 32px;">
-                                            {{ substr($chatUser->name, 0, 1) }}
-                                        </div>
-                                    @endif
+                                        @section('content')
+                                            <div class="container py-4">
+                                                <div class="row">
+                                                    <!-- Chat sidebar - users list -->
+                                                    <div class="col-md-3">
+                                                        <div class="card shadow-sm mb-3" style="border: none; border-radius: 15px; overflow: hidden; background-color: #EEE9DA;">
+                                                            <div class="card-header d-flex justify-content-between align-items-center" style="background-color: #93BFCF; border: none; color: #EEE9DA;">
+                                                                <h5 class="card-title mb-0">
+                                                                    <i class="bx bx-group me-2"></i>Chat Members
+                                                                </h5>
+                                                                @if(Auth::id() === $booking->user_id)
+                                                                   <button type="button" id="addUserBtn" class="btn btn-sm" style="background-color: #EEE9DA; color: #6096B4;">
+                                                                       <i class="bx bx-plus"></i>
+                                                                   </button>
+                                                                @endif
+                                                            </div>
+                                                            <div class="card-body p-0" style="background-color: #EEE9DA;">
+                                                                <ul class="list-group list-group-flush">
+                                                                    @foreach($chatUsers as $chatUser)
+                                                                        <li class="list-group-item d-flex align-items-center" style="background-color: #EEE9DA; border-color: #BDCDD6;">
+                                                                            @if($chatUser->profile_image)
+                                                                                <img src="{{ asset('storage/' . $chatUser->profile_image) }}"
+                                                                                     class="rounded-circle me-2" width="32" height="32" alt="{{ $chatUser->name }}">
+                                                                            @else
+                                                                                <div class="rounded-circle d-flex align-items-center justify-content-center me-2"
+                                                                                     style="width: 32px; height: 32px; background-color: #BDCDD6; color: #6096B4;">
+                                                                                    {{ substr($chatUser->name, 0, 1) }}
+                                                                                </div>
+                                                                            @endif
 
-                                    <div>
-                                        {{ $chatUser->name }}
-                                        @if($groupChat->isAdmin($chatUser))
-                                            <span class="badge bg-info ms-1">Admin</span>
-                                        @endif
-                                    </div>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    <!-- Remove the old form here -->
-                </div>
+                                                                            <div style="color: #6096B4;">
+                                                                                {{ $chatUser->name }}
+                                                                                @if($groupChat->isAdmin($chatUser))
+                                                                                    <span class="badge ms-1" style="background-color: #93BFCF; color: #EEE9DA;">Admin</span>
+                                                                                @endif
+                                                                            </div>
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            </div>
+                                                        </div>
 
-                <!-- Booking details card -->
-                <div class="card shadow-sm">
-                    <div class="card-header bg-secondary text-white">
-                        <h5 class="card-title mb-0">
-                            <i class="bi bi-calendar-check me-2"></i>Booking Details
-                        </h5>
-                    </div>
-                    <div class="card-body">
-                        <p class="mb-1"><strong>Workspace:</strong> {{ $booking->workspace->name }}</p>
-                        <p class="mb-1"><strong>Dates:</strong>
-                            @if($booking->start_datetime->format('Y-m-d') == $booking->end_datetime->format('Y-m-d'))
-                                {{ $booking->start_datetime->format('M d, Y') }}
-                            @else
-                                {{ $booking->start_datetime->format('M d, Y') }} - {{ $booking->end_datetime->format('M d, Y') }}
-                            @endif
-                        </p>
-                        <p class="mb-1"><strong>Type:</strong> {{ ucfirst($booking->booking_type) }}</p>
-                        <p class="mb-0"><strong>Status:</strong>
-                            @if($booking->status === 'confirmed')
-                                <span class="badge bg-success">Confirmed</span>
-                            @elseif($booking->status === 'pending')
-                                <span class="badge bg-warning text-dark">Pending</span>
-                            @else
-                                <span class="badge bg-danger">Cancelled</span>
-                            @endif
-                        </p>
-                    </div>
-                </div>
-            </div>
+                                                        <!-- Booking details card -->
+                                                        <div class="card shadow-sm" style="border: none; border-radius: 15px; overflow: hidden; background-color: #EEE9DA;">
+                                                            <div class="card-header" style="background-color: #BDCDD6; border: none; color: #6096B4;">
+                                                                <h5 class="card-title mb-0">
+                                                                    <i class="bx bx-calendar-check me-2"></i>Booking Details
+                                                                </h5>
+                                                            </div>
+                                                            <div class="card-body" style="background-color: #EEE9DA;">
+                                                                <p class="mb-1"><strong style="color: #6096B4;">Workspace:</strong> <span style="color: #93BFCF;">{{ $booking->workspace->name }}</span></p>
+                                                                <p class="mb-1"><strong style="color: #6096B4;">Dates:</strong> <span style="color: #93BFCF;">
+                                                                    @if($booking->start_datetime->format('Y-m-d') == $booking->end_datetime->format('Y-m-d'))
+                                                                        {{ $booking->start_datetime->format('M d, Y') }}
+                                                                    @else
+                                                                        {{ $booking->start_datetime->format('M d, Y') }} - {{ $booking->end_datetime->format('M d, Y') }}
+                                                                    @endif
+                                                                </span></p>
+                                                                <p class="mb-1"><strong style="color: #6096B4;">Type:</strong> <span style="color: #93BFCF;">{{ ucfirst($booking->booking_type) }}</span></p>
+                                                                <p class="mb-0"><strong style="color: #6096B4;">Status:</strong>
+                                                                    @if($booking->status === 'confirmed')
+                                                                        <span class="badge" style="background-color: #6096B4; color: #EEE9DA;">
+                                                                            <i class="bx bx-check-circle me-1"></i> Confirmed
+                                                                        </span>
+                                                                    @elseif($booking->status === 'pending')
+                                                                        <span class="badge" style="background-color: #BDCDD6; color: #6096B4;">
+                                                                            <i class="bx bx-time me-1"></i> Pending
+                                                                        </span>
+                                                                    @else
+                                                                        <span class="badge" style="background-color: #93BFCF; color: #EEE9DA;">
+                                                                            <i class="bx bx-x-circle me-1"></i> Cancelled
+                                                                        </span>
+                                                                    @endif
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
-            <!-- Chat main content -->
-            <div class="col-md-9">
-                <div class="card shadow-sm">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="card-title mb-0">
-                            <i class="bi bi-chat-dots me-2"></i>{{ $groupChat->name }}
-                        </h5>
-                    </div>
+                                                    <!-- Chat main content -->
+                                                    <div class="col-md-9">
+                                                        <div class="card shadow-sm" style="border: none; border-radius: 15px; overflow: hidden; background-color: #EEE9DA;">
+                                                            <div class="card-header" style="background-color: #93BFCF; border: none; color: #EEE9DA;">
+                                                                <h5 class="card-title mb-0">
+                                                                    <i class="bx bx-message-dots me-2"></i>{{ $groupChat->name }}
+                                                                </h5>
+                                                            </div>
 
-                    <!-- Chat messages area -->
-                    <div class="card-body p-0">
-                        <div id="chat-messages" class="p-3" style="height: 500px; overflow-y: auto;">
-                            @if(count($messages) > 0)
-                                @foreach($messages as $message)
-                                    <div id="message-{{ $message->id }}" class="message-container {{ $message->user_id === Auth::id() ? 'text-end' : 'text-start' }} mb-3">
-                                        <div class="d-inline-block {{ $message->user_id === Auth::id() ? 'bg-primary text-white' : 'bg-light' }} message p-2 px-3" style="max-width: 75%;">
-                                            @if($message->user_id !== Auth::id())
-                                                <div class="fw-bold text-start mb-1">{{ $message->user->name }}</div>
-                                            @endif
-                                            <div class="message-text" style="word-break: break-word; text-align: left;">
-                                                {{ $message->message }}
+                                                            <!-- Chat messages area -->
+                                                            <div class="card-body p-0" style="background-color: #EEE9DA;">
+                                                                <div id="chat-messages" class="p-3" style="height: 500px; overflow-y: auto; background-color: #EEE9DA;">
+                                                                    @if(count($messages) > 0)
+                                                                        @foreach($messages as $message)
+                                                                            <div id="message-{{ $message->id }}" class="message-container {{ $message->user_id === Auth::id() ? 'text-end' : 'text-start' }} mb-3">
+                                                                                <div class="d-inline-block message p-2 px-3"
+                                                                                     style="max-width: 75%; border-radius: 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                                                                                            background-color: {{ $message->user_id === Auth::id() ? '#6096B4' : '#BDCDD6' }};
+                                                                                            color: {{ $message->user_id === Auth::id() ? '#EEE9DA' : '#6096B4' }};">
+                                                                                    @if($message->user_id !== Auth::id())
+                                                                                        <div class="fw-bold text-start mb-1">{{ $message->user->name }}</div>
+                                                                                    @endif
+                                                                                    <div class="message-text" style="word-break: break-word; text-align: left;">
+                                                                                        {{ $message->message }}
+                                                                                    </div>
+                                                                                    <div class="message-footer d-flex justify-content-between align-items-center mt-1">
+                                                                                        <small style="color: {{ $message->user_id === Auth::id() ? '#EEE9DA' : '#6096B4' }};">
+                                                                                            {{ $message->created_at->format('h:i A') }}
+                                                                                        </small>
+                                                                                        @if($message->user_id === Auth::id() || $groupChat->isAdmin(Auth::user()))
+                                                                                            <button type="button" class="btn btn-link p-0 ms-2 delete-message-btn"
+                                                                                                    style="color: {{ $message->user_id === Auth::id() ? '#EEE9DA' : '#6096B4' }};"
+                                                                                                    data-message-id="{{ $message->id }}">
+                                                                                                <i class="bx bx-trash"></i>
+                                                                                            </button>
+                                                                                        @endif
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="small mt-1" style="color: #93BFCF;">
+                                                                                    {{ $message->created_at->format('M d, Y') }}
+                                                                                </div>
+                                                                            </div>
+                                                                        @endforeach
+                                                                    @else
+                                                                        <div class="text-center p-5">
+                                                                            <i class="bx bx-chat fs-1" style="color: #BDCDD6;"></i>
+                                                                            <p class="mt-3" style="color: #6096B4;">No messages yet. Start the conversation!</p>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+
+                                                            <!-- Message input form -->
+                                                            <div class="card-footer" style="background-color: #BDCDD6; border: none;">
+                                                                <form id="messageForm" action="{{ route('group-chats.messages.store', $groupChat) }}" method="POST">
+                                                                    @csrf
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="messageInput" name="message" class="form-control"
+                                                                               placeholder="Type a message..." required
+                                                                               style="border-color: #93BFCF; background-color: #EEE9DA; color: #6096B4;">
+                                                                        <button type="submit" class="btn" style="background-color: #6096B4; color: #EEE9DA;">
+                                                                            <i class="bx bx-send"></i> Send
+                                                                        </button>
+                                                                    </div>
+                                                                    @error('message')
+                                                                    <div class="small mt-1" style="color: #FF0000;">{{ $message }}</div>
+                                                                    @enderror
+                                                                </form>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Back button -->
+                                                        <div class="mt-3">
+                                                            <a href="{{ route('workspace.index') }}" class="btn"
+                                                               style="background-color: #EEE9DA; color: #6096B4; border: 1px solid #BDCDD6;">
+                                                                <i class="bx bx-arrow-back me-1"></i> Back to Bookings
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="message-footer d-flex justify-content-between align-items-center mt-1">
-                                                <small class="text-{{ $message->user_id === Auth::id() ? 'white' : 'muted' }}">
-                                                    {{ $message->created_at->format('h:i A') }}
-                                                </small>
-                                                @if($message->user_id === Auth::id() || $groupChat->isAdmin(Auth::user()))
-                                                    <button type="button" class="btn btn-link p-0 ms-2 text-{{ $message->user_id === Auth::id() ? 'white' : 'muted' }} delete-message-btn"
-                                                            data-message-id="{{ $message->id }}">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                @endif
+
+                                            <!-- Delete Message Confirmation Modal -->
+                                            <div class="modal fade" id="deleteMessageModal" tabindex="-1" aria-labelledby="deleteMessageModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content" style="background-color: #EEE9DA; border: none; border-radius: 15px;">
+                                                        <div class="modal-header" style="background-color: #93BFCF; color: #EEE9DA; border: none;">
+                                                            <h5 class="modal-title" id="deleteMessageModalLabel">Delete Message</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="color: #EEE9DA;"></button>
+                                                        </div>
+                                                        <div class="modal-body" style="color: #6096B4;">
+                                                            Are you sure you want to delete this message? This action cannot be undone.
+                                                        </div>
+                                                        <div class="modal-footer" style="border-color: #BDCDD6;">
+                                                            <button type="button" class="btn" style="background-color: #BDCDD6; color: #6096B4;" data-bs-dismiss="modal">Cancel</button>
+                                                            <form id="deleteMessageForm" method="POST">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn" style="background-color: #6096B4; color: #EEE9DA;">Delete</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="text-muted small mt-1">
-                                            {{ $message->created_at->format('M d, Y') }}
-                                        </div>
-                                    </div>
-                                @endforeach
-                            @else
-                                <div class="text-center text-muted p-5">
-                                    <i class="bi bi-chat-text fs-1"></i>
-                                    <p class="mt-3">No messages yet. Start the conversation!</p>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
+                                        @endsection
 
-                    <!-- Message input form -->
-                    <div class="card-footer">
-                        <form id="messageForm" action="{{ route('group-chats.messages.store', $groupChat) }}" method="POST">
-                            @csrf
-                            <div class="input-group">
-                                <input type="text" id="messageInput" name="message" class="form-control" placeholder="Type a message..." required>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-send"></i> Send
-                                </button>
-                            </div>
-                            @error('message')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
-                            @enderror
-                        </form>
-                    </div>
-                </div>
+                                        @push('scripts')
+                                            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                                            <script>
+                                                document.addEventListener('DOMContentLoaded', function() {
+                                                    // Scroll to the bottom of the chat messages container
+                                                    const chatMessages = document.getElementById('chat-messages');
+                                                    chatMessages.scrollTop = chatMessages.scrollHeight;
 
-                <!-- Back button -->
-                <div class="mt-3">
-                    <a href="{{ route('workspace.index') }}" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left"></i> Back to Bookings
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+                                                    // Handle message submission via AJAX
+                                                    const messageForm = document.getElementById('messageForm');
+                                                    const messageInput = document.getElementById('messageInput');
 
-    <!-- Delete Message Confirmation Modal -->
-    <div class="modal fade" id="deleteMessageModal" tabindex="-1" aria-labelledby="deleteMessageModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteMessageModalLabel">Delete Message</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Are you sure you want to delete this message? This action cannot be undone.
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <form id="deleteMessageForm" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-@endsection
+                                                    messageForm.addEventListener('submit', function(e) {
+                                                        e.preventDefault();
 
-@push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Scroll to the bottom of the chat messages container
-            const chatMessages = document.getElementById('chat-messages');
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+                                                        if (messageInput.value.trim() === '') {
+                                                            return;
+                                                        }
 
-            // Handle message submission via AJAX
-            const messageForm = document.getElementById('messageForm');
-            const messageInput = document.getElementById('messageInput');
+                                                        const formData = new FormData(messageForm);
 
-            messageForm.addEventListener('submit', function(e) {
-                e.preventDefault();
+                                                        fetch(messageForm.action, {
+                                                            method: 'POST',
+                                                            body: formData,
+                                                            headers: {
+                                                                'X-Requested-With': 'XMLHttpRequest',
+                                                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                                                            }
+                                                        })
+                                                            .then(response => response.json())
+                                                            .then(data => {
+                                                                if (data.success) {
+                                                                    // Create and append the new message
+                                                                    const newMessage = `
+                                                                <div id="message-${data.message.id}" class="message-container text-end mb-3">
+                                                                    <div class="d-inline-block message p-2 px-3"
+                                                                         style="max-width: 75%; border-radius: 12px; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); background-color: #6096B4; color: #EEE9DA;">
+                                                                        <div class="message-text" style="word-break: break-word; text-align: left;">
+                                                                            ${data.message.text}
+                                                                        </div>
+                                                                        <div class="message-footer d-flex justify-content-between align-items-center mt-1">
+                                                                            <small style="color: #EEE9DA;">
+                                                                                ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                                                                            </small>
+                                                                            <button type="button" class="btn btn-link p-0 ms-2 delete-message-btn"
+                                                                                style="color: #EEE9DA;"
+                                                                                data-message-id="${data.message.id}">
+                                                                                <i class="bx bx-trash"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="small mt-1" style="color: #93BFCF;">
+                                                                        ${new Date().toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'})}
+                                                                    </div>
+                                                                </div>
+                                                            `;
 
-                if (messageInput.value.trim() === '') {
-                    return;
-                }
+                                                                    chatMessages.insertAdjacentHTML('beforeend', newMessage);
+                                                                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                                                                    messageInput.value = '';
 
-                const formData = new FormData(messageForm);
+                                                                    // Add event listener to the newly created delete button
+                                                                    setupDeleteListener(document.querySelector(`#message-${data.message.id} .delete-message-btn`));
+                                                                } else {
+                                                                    alert('Failed to send message. Please try again.');
+                                                                }
+                                                            })
+                                                            .catch(error => {
+                                                                console.error('Error sending message:', error);
+                                                                alert('An error occurred. Please try again later.');
+                                                            });
+                                                    });
 
-                fetch(messageForm.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    }
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Create and append the new message
-                            const newMessage = `
-                        <div id="message-${data.message.id}" class="message-container text-end mb-3">
-                            <div class="d-inline-block bg-primary text-white message p-2 px-3" style="max-width: 75%;">
-                                <div class="message-text" style="word-break: break-word; text-align: left;">
-                                    ${data.message.text}
-                                </div>
-                                <div class="message-footer d-flex justify-content-between align-items-center mt-1">
-                                    <small class="text-white">
-                                        ${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                    </small>
-                                    <button type="button" class="btn btn-link p-0 ms-2 text-white delete-message-btn"
-                                        data-message-id="${data.message.id}">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="text-muted small mt-1">
-                                ${new Date().toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'})}
-                            </div>
-                        </div>
-                    `;
+                                                    // Handle message deletion
+                                                    const deleteMessageModal = new bootstrap.Modal(document.getElementById('deleteMessageModal'));
+                                                    const deleteMessageForm = document.getElementById('deleteMessageForm');
 
-                            chatMessages.insertAdjacentHTML('beforeend', newMessage);
-                            chatMessages.scrollTop = chatMessages.scrollHeight;
-                            messageInput.value = '';
+                                                    function setupDeleteListener(button) {
+                                                        button.addEventListener('click', function() {
+                                                            const messageId = this.dataset.messageId;
+                                                            deleteMessageForm.action = `{{ url('group-chat-messages') }}/${messageId}`;
+                                                            deleteMessageModal.show();
+                                                        });
+                                                    }
 
-                            // Add event listener to the newly created delete button
-                            setupDeleteListener(document.querySelector(`#message-${data.message.id} .delete-message-btn`));
-                        } else {
-                            alert('Failed to send message. Please try again.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error sending message:', error);
-                        alert('An error occurred. Please try again later.');
-                    });
-            });
+                                                    // Setup event listeners for all delete buttons
+                                                    document.querySelectorAll('.delete-message-btn').forEach(button => {
+                                                        setupDeleteListener(button);
+                                                    });
 
-            // Handle message deletion
-            const deleteMessageModal = new bootstrap.Modal(document.getElementById('deleteMessageModal'));
-            const deleteMessageForm = document.getElementById('deleteMessageForm');
+                                                    // Handle message deletion form submission via AJAX
+                                                    deleteMessageForm.addEventListener('submit', function(e) {
+                                                        e.preventDefault();
 
-            function setupDeleteListener(button) {
-                button.addEventListener('click', function() {
-                    const messageId = this.dataset.messageId;
-                    deleteMessageForm.action = `{{ url('group-chat-messages') }}/${messageId}`;
-                    deleteMessageModal.show();
-                });
-            }
+                                                        fetch(deleteMessageForm.action, {
+                                                            method: 'DELETE',
+                                                            headers: {
+                                                                'X-Requested-With': 'XMLHttpRequest',
+                                                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                                                            }
+                                                        })
+                                                            .then(response => response.json())
+                                                            .then(data => {
+                                                                if (data.success) {
+                                                                    const messageId = deleteMessageForm.action.split('/').pop();
+                                                                    const messageElement = document.getElementById(`message-${messageId}`);
 
-            // Setup event listeners for all delete buttons
-            document.querySelectorAll('.delete-message-btn').forEach(button => {
-                setupDeleteListener(button);
-            });
+                                                                    if (messageElement) {
+                                                                        messageElement.remove();
+                                                                    }
 
-            // Handle message deletion form submission via AJAX
-            deleteMessageForm.addEventListener('submit', function(e) {
-                e.preventDefault();
+                                                                    deleteMessageModal.hide();
+                                                                } else {
+                                                                    alert('Failed to delete message. Please try again.');
+                                                                }
+                                                            })
+                                                            .catch(error => {
+                                                                console.error('Error deleting message:', error);
+                                                                alert('An error occurred. Please try again later.');
+                                                            });
+                                                    });
 
-                fetch(deleteMessageForm.action, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    }
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            const messageId = deleteMessageForm.action.split('/').pop();
-                            const messageElement = document.getElementById(`message-${messageId}`);
+                                                    // Add User SweetAlert functionality
+                                                    const addUserBtn = document.getElementById('addUserBtn');
+                                                    if (addUserBtn) {
+                                                        addUserBtn.addEventListener('click', function() {
+                                                            const availableUsers = @json($availableUsers);
 
-                            if (messageElement) {
-                                messageElement.remove();
-                            }
+                                                            // Create options for the select input
+                                                            let options = '';
+                                                            availableUsers.forEach(user => {
+                                                                options += `<option value="${user.id}">${user.name} (${user.email})</option>`;
+                                                            });
 
-                            deleteMessageModal.hide();
-                        } else {
-                            alert('Failed to delete message. Please try again.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error deleting message:', error);
-                        alert('An error occurred. Please try again later.');
-                    });
-            });
+                                                            Swal.fire({
+                                                                title: 'Add User to Chat',
+                                                                html: `
+                                                                    <select id="user-select" class="form-select" style="background-color: #EEE9DA; border-color: #BDCDD6; color: #6096B4;">
+                                                                        <option value="">Select a user...</option>
+                                                                        ${options}
+                                                                    </select>
+                                                                `,
+                                                                showCancelButton: true,
+                                                                confirmButtonText: 'Add',
+                                                                confirmButtonColor: '#6096B4',
+                                                                cancelButtonColor: '#BDCDD6',
+                                                                showLoaderOnConfirm: true,
+                                                                preConfirm: () => {
+                                                                    const selectedUserId = document.getElementById('user-select').value;
+                                                                    if (!selectedUserId) {
+                                                                        Swal.showValidationMessage('Please select a user');
+                                                                        return false;
+                                                                    }
 
-            // Add User SweetAlert functionality
-            const addUserBtn = document.getElementById('addUserBtn');
-            if (addUserBtn) {
-                addUserBtn.addEventListener('click', function() {
-                    const availableUsers = @json($availableUsers);
+                                                                    // Send AJAX request to add the user
+                                                                    return fetch('{{ route('group-chats.users.add', $groupChat) }}', {
+                                                                        method: 'POST',
+                                                                        headers: {
+                                                                            'Content-Type': 'application/json',
+                                                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                                                                        },
+                                                                        body: JSON.stringify({ user_id: selectedUserId })
+                                                                    })
+                                                                        .then(response => {
+                                                                            if (!response.ok) {
+                                                                                throw new Error('Failed to add user');
+                                                                            }
+                                                                            return response.json();
+                                                                        })
+                                                                        .catch(error => {
+                                                                            Swal.showValidationMessage(`Request failed: ${error.message}`);
+                                                                        });
+                                                                },
+                                                                allowOutsideClick: () => !Swal.isLoading()
+                                                            }).then((result) => {
+                                                                if (result.isConfirmed) {
+                                                                    Swal.fire({
+                                                                        title: 'Success!',
+                                                                        text: 'User added to chat successfully',
+                                                                        icon: 'success',
+                                                                        timer: 2000,
+                                                                        showConfirmButton: false
+                                                                    }).then(() => {
+                                                                        // Reload page to show the updated user list
+                                                                        window.location.reload();
+                                                                    });
+                                                                }
+                                                            });
+                                                        });
+                                                    }
+                                                });
+                                            </script>
+                                        @endpush
 
-                    // Create options for the select input
-                    let options = '';
-                    availableUsers.forEach(user => {
-                        options += `<option value="${user.id}">${user.name} (${user.email})</option>`;
-                    });
+                                        @push('styles')
+                                            <style>
+                                                /* Custom styles for chat interface */
+                                                .message-container {
+                                                    margin-bottom: 15px;
+                                                }
 
-                    Swal.fire({
-                        title: 'Add User to Chat',
-                        html: `
-                            <select id="user-select" class="form-select">
-                                <option value="">Select a user...</option>
-                                ${options}
-                            </select>
-                        `,
-                        showCancelButton: true,
-                        confirmButtonText: 'Add',
-                        showLoaderOnConfirm: true,
-                        preConfirm: () => {
-                            const selectedUserId = document.getElementById('user-select').value;
-                            if (!selectedUserId) {
-                                Swal.showValidationMessage('Please select a user');
-                                return false;
-                            }
+                                                .message {
+                                                    position: relative;
+                                                    border-radius: 12px;
+                                                    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+                                                }
 
-                            // Send AJAX request to add the user
-                            return fetch('{{ route('group-chats.users.add', $groupChat) }}', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                                },
-                                body: JSON.stringify({ user_id: selectedUserId })
-                            })
-                                .then(response => {
-                                    if (!response.ok) {
-                                        throw new Error('Failed to add user');
-                                    }
-                                    return response.json();
-                                })
-                                .catch(error => {
-                                    Swal.showValidationMessage(`Request failed: ${error.message}`);
-                                });
-                        },
-                        allowOutsideClick: () => !Swal.isLoading()
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            Swal.fire({
-                                title: 'Success!',
-                                text: 'User added to chat successfully',
-                                icon: 'success',
-                                timer: 2000,
-                                showConfirmButton: false
-                            }).then(() => {
-                                // Reload page to show the updated user list
-                                window.location.reload();
-                            });
-                        }
-                    });
-                });
-            }
-        });
-    </script>
-@endpush
+                                                /* Sender messages (right side) */
+                                                .text-end .message {
+                                                    border-bottom-right-radius: 3px;
+                                                }
 
-@push('styles')
-    <style>
-        /* Custom styles for chat interface */
-        .message-container {
-            margin-bottom: 15px;
-        }
+                                                /* Receiver messages (left side) */
+                                                .text-start .message {
+                                                    border-bottom-left-radius: 3px;
+                                                }
 
-        .message {
-            position: relative;
-            border-radius: 12px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        }
+                                                .message-footer {
+                                                    font-size: 0.75rem;
+                                                }
 
-        /* Sender messages (right side) */
-        .text-end .message {
-            border-bottom-right-radius: 3px;
-        }
+                                                .delete-message-btn {
+                                                    opacity: 0.6;
+                                                    transition: opacity 0.2s;
+                                                }
 
-        /* Receiver messages (left side) */
-        .text-start .message {
-            border-bottom-left-radius: 3px;
-        }
+                                                .delete-message-btn:hover {
+                                                    opacity: 1;
+                                                }
 
-        .message-footer {
-            font-size: 0.75rem;
-        }
+                                                /* Ensure chat container takes full height and scrolls properly */
+                                                #chat-messages::-webkit-scrollbar {
+                                                    width: 6px;
+                                                }
 
-        .delete-message-btn {
-            opacity: 0.6;
-            transition: opacity 0.2s;
-        }
+                                                #chat-messages::-webkit-scrollbar-track {
+                                                    background: #EEE9DA;
+                                                }
 
-        .delete-message-btn:hover {
-            opacity: 1;
-        }
+                                                #chat-messages::-webkit-scrollbar-thumb {
+                                                    background: #BDCDD6;
+                                                    border-radius: 6px;
+                                                }
 
-        /* Ensure chat container takes full height and scrolls properly */
-        #chat-messages::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        #chat-messages::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-
-        #chat-messages::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 6px;
-        }
-
-        #chat-messages::-webkit-scrollbar-thumb:hover {
-            background: #a1a1a1;
-        }
-    </style>
-@endpush
+                                                #chat-messages::-webkit-scrollbar-thumb:hover {
+                                                    background: #93BFCF;
+                                                }
+                                            </style>
+                                        @endpush

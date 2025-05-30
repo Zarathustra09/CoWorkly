@@ -1,152 +1,158 @@
 @extends('layouts.admin.app')
 
-                   @section('content')
-                       <div class="container py-4">
-                           <div class="row">
-                               <div class="col-md-8">
-                                   <div class="card shadow-sm mb-4">
-                                       <div class="card-body">
-                                           <h2 class="fw-bold">Book Workspace</h2>
-                                           <p class="text-muted">Complete the form to reserve your workspace</p>
+@section('content')
+    <div class="container py-4">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card shadow-sm mb-4" style="border: none; border-radius: 15px; background-color: #EEE9DA;">
+                    <div class="card-body">
+                        <h2 class="fw-bold" style="color: #6096B4;">Book Workspace</h2>
+                        <p class="text-muted">Complete the form to reserve your workspace</p>
 
-                                           @if ($errors->any())
-                                               <div class="alert alert-danger">
-                                                   <ul class="mb-0">
-                                                       @foreach ($errors->all() as $error)
-                                                           <li>{{ $error }}</li>
-                                                       @endforeach
-                                                   </ul>
-                                               </div>
-                                           @endif
+                        @if ($errors->any())
+                            <div class="alert alert-danger" style="background-color: #f8d7da; border-color: #f5c2c7; color: #842029;">
+                                <ul class="mb-0">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
 
-                                           <form action="{{ route('bookings.store') }}" method="POST" id="bookingForm">
-                                               @csrf
-                                               <input type="hidden" name="workspace_id" value="{{ $workspace->id }}">
+                        <form action="{{ route('bookings.store') }}" method="POST" id="bookingForm">
+                            @csrf
+                            <input type="hidden" name="workspace_id" value="{{ $workspace->id }}">
 
-                                               <div class="row mb-3">
-                                                   <div class="col-md-6 mb-3 mb-md-0">
-                                                       <div class="card h-100">
-                                                           <img src="{{ $workspace->image ? asset('storage/workspace_images/' . $workspace->image) : asset('images/default_workspace.jpg') }}"
-                                                                class="card-img-top"
-                                                                alt="{{ $workspace->name }}"
-                                                                style="height: 200px; object-fit: cover;">
+                            <div class="row mb-3">
+                                <div class="col-md-6 mb-3 mb-md-0">
+                                    <div class="card h-100" style="border: none; border-radius: 15px; overflow: hidden;">
+                                        <img src="{{ $workspace->image ? asset('storage/workspace_images/' . $workspace->image) : asset('images/default_workspace.jpg') }}"
+                                             class="card-img-top"
+                                             alt="{{ $workspace->name }}"
+                                             style="height: 200px; object-fit: cover;">
 
-                                                           <div class="card-body">
-                                                               <h5 class="card-title">{{ $workspace->name }}</h5>
-                                                               <div class="d-flex gap-2 mb-2">
-                                                                   <span class="badge bg-primary">{{ $workspace->category->name }}</span>
-                                                               </div>
-                                                               <p class="text-muted small">{{ Str::limit($workspace->description, 100) }}</p>
+                                        <div class="card-body" style="background-color: #EEE9DA;">
+                                            <h5 class="card-title" style="color: #6096B4;">{{ $workspace->name }}</h5>
+                                            <div class="d-flex gap-2 mb-2">
+                                                <span class="badge" style="background-color: #93BFCF; color: #EEE9DA;">{{ $workspace->category->name }}</span>
+                                            </div>
+                                            <p class="text-muted small">{{ Str::limit($workspace->description, 100) }}</p>
 
-                                                               <div class="fw-bold">
-                                                                   @if($workspace->hourly_rate)
-                                                                       <div>₱{{ number_format($workspace->hourly_rate) }} <small class="text-muted fw-normal">/ hour</small></div>
-                                                                   @endif
-                                                                   <div>₱{{ number_format($workspace->daily_rate) }} <small class="text-muted fw-normal">/ day</small></div>
-                                                               </div>
-                                                           </div>
-                                                       </div>
-                                                   </div>
+                                            <div class="fw-bold" style="color: #6096B4;">
+                                                @if($workspace->hourly_rate)
+                                                    <div>₱{{ number_format($workspace->hourly_rate) }} <small class="text-muted fw-normal">/ hour</small></div>
+                                                @endif
+                                                <div>₱{{ number_format($workspace->daily_rate) }} <small class="text-muted fw-normal">/ day</small></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                                                   <div class="col-md-6">
-                                                       <div class="mb-3">
-                                                           <label for="booking_type" class="form-label">Booking Type</label>
-                                                           <select class="form-select @error('booking_type') is-invalid @enderror" id="booking_type" name="booking_type" required>
-                                                               @if($workspace->hourly_rate)
-                                                                   <option value="hourly" {{ old('booking_type') == 'hourly' ? 'selected' : '' }}>Hourly (₱{{ number_format($workspace->hourly_rate) }}/hour)</option>
-                                                               @endif
-                                                               <option value="daily" {{ old('booking_type', 'daily') == 'daily' ? 'selected' : '' }}>Daily (₱{{ number_format($workspace->daily_rate) }}/day)</option>
-                                                           </select>
-                                                           @error('booking_type')
-                                                               <div class="invalid-feedback">{{ $message }}</div>
-                                                           @enderror
-                                                       </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="booking_type" class="form-label" style="color: #6096B4;"><i class="bx bx-purchase-tag me-1"></i>Booking Type</label>
+                                        <select class="form-select @error('booking_type') is-invalid @enderror"
+                                                id="booking_type" name="booking_type" required
+                                                style="border-color: #BDCDD6; background-color: #EEE9DA; color: #6096B4;">
+                                            @if($workspace->hourly_rate)
+                                                <option value="hourly" {{ old('booking_type') == 'hourly' ? 'selected' : '' }}>Hourly (₱{{ number_format($workspace->hourly_rate) }}/hour)</option>
+                                            @endif
+                                            <option value="daily" {{ old('booking_type', 'daily') == 'daily' ? 'selected' : '' }}>Daily (₱{{ number_format($workspace->daily_rate) }}/day)</option>
+                                        </select>
+                                        @error('booking_type')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
 
-                                                       <div class="mb-3">
-                                                           <label for="start_date" class="form-label">Start Date</label>
-                                                           <input type="date"
-                                                                  class="form-control @error('start_datetime') is-invalid @enderror"
-                                                                  id="start_date"
-                                                                  name="start_date"
-                                                                  min="{{ date('Y-m-d') }}"
-                                                                  value="{{ old('start_date', date('Y-m-d')) }}"
-                                                                  required>
-                                                           @error('start_datetime')
-                                                               <div class="invalid-feedback">{{ $message }}</div>
-                                                           @enderror
-                                                       </div>
+                                    <div class="mb-3">
+                                        <label for="start_date" class="form-label" style="color: #6096B4;"><i class="bx bx-calendar me-1"></i>Start Date</label>
+                                        <input type="date"
+                                               class="form-control @error('start_datetime') is-invalid @enderror"
+                                               id="start_date"
+                                               name="start_date"
+                                               min="{{ date('Y-m-d') }}"
+                                               value="{{ old('start_date', date('Y-m-d')) }}"
+                                               required
+                                               style="border-color: #BDCDD6; background-color: #EEE9DA; color: #6096B4;">
+                                        @error('start_datetime')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
 
-                                                       <div class="mb-3">
-                                                           <label for="end_date" class="form-label">End Date</label>
-                                                           <input type="date"
-                                                                  class="form-control @error('end_datetime') is-invalid @enderror"
-                                                                  id="end_date"
-                                                                  name="end_date"
-                                                                  min="{{ date('Y-m-d') }}"
-                                                                  value="{{ old('end_date', date('Y-m-d')) }}"
-                                                                  required>
-                                                           @error('end_datetime')
-                                                               <div class="invalid-feedback">{{ $message }}</div>
-                                                           @enderror
-                                                       </div>
+                                    <div class="mb-3">
+                                        <label for="end_date" class="form-label" style="color: #6096B4;"><i class="bx bx-calendar-x me-1"></i>End Date</label>
+                                        <input type="date"
+                                               class="form-control @error('end_datetime') is-invalid @enderror"
+                                               id="end_date"
+                                               name="end_date"
+                                               min="{{ date('Y-m-d') }}"
+                                               value="{{ old('end_date', date('Y-m-d')) }}"
+                                               required
+                                               style="border-color: #BDCDD6; background-color: #EEE9DA; color: #6096B4;">
+                                        @error('end_datetime')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
 
-                                                       <input type="hidden" name="start_datetime" id="start_datetime">
-                                                       <input type="hidden" name="end_datetime" id="end_datetime">
-                                                       <input type="hidden" name="total_cost" id="hidden_total_cost" value="0">
-                                                   </div>
-                                               </div>
-                                           </form>
-                                       </div>
-                                   </div>
-                               </div>
+                                    <input type="hidden" name="start_datetime" id="start_datetime">
+                                    <input type="hidden" name="end_datetime" id="end_datetime">
+                                    <input type="hidden" name="total_cost" id="hidden_total_cost" value="0">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
-                               <div class="col-md-4">
-                                   <div class="card shadow-sm sticky-md-top" style="top: 1rem;">
-                                       <div class="card-body">
-                                           <h5 class="fw-bold">Booking Summary</h5>
-                                           <div class="d-flex justify-content-between mb-2">
-                                               <span>Workspace:</span>
-                                               <span class="fw-medium">{{ $workspace->name }}</span>
-                                           </div>
-                                           <div class="d-flex justify-content-between mb-2 booking-dates">
-                                               <span>Date Range:</span>
-                                               <span class="fw-medium" id="date-range">-</span>
-                                           </div>
-                                           <div class="d-flex justify-content-between mb-2 booking-hours">
-                                               <span>Hours:</span>
-                                               <span class="fw-medium">9:00 AM - 5:00 PM</span>
-                                           </div>
-                                           <div class="d-flex justify-content-between mb-2">
-                                               <span>Type:</span>
-                                               <span class="fw-medium" id="booking-type-display">Daily</span>
-                                           </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm sticky-md-top" style="top: 1rem; border: none; border-radius: 15px; background-color: #EEE9DA;">
+                    <div class="card-body">
+                        <h5 class="fw-bold" style="color: #6096B4;"><i class="bx bx-receipt me-1"></i>Booking Summary</h5>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span style="color: #93BFCF;">Workspace:</span>
+                            <span class="fw-medium" style="color: #6096B4;">{{ $workspace->name }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2 booking-dates">
+                            <span style="color: #93BFCF;">Date Range:</span>
+                            <span class="fw-medium" id="date-range" style="color: #6096B4;">-</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2 booking-hours">
+                            <span style="color: #93BFCF;">Hours:</span>
+                            <span class="fw-medium" style="color: #6096B4;">9:00 AM - 5:00 PM</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span style="color: #93BFCF;">Type:</span>
+                            <span class="fw-medium" id="booking-type-display" style="color: #6096B4;">Daily</span>
+                        </div>
 
-                                           <hr>
+                        <hr style="border-color: #BDCDD6;">
 
-                                           <div class="d-flex justify-content-between mb-2">
-                                               <span>Duration:</span>
-                                               <span class="fw-medium" id="duration-display">1 day</span>
-                                           </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span style="color: #93BFCF;">Duration:</span>
+                            <span class="fw-medium" id="duration-display" style="color: #6096B4;">1 day</span>
+                        </div>
 
-                                           <div class="d-flex justify-content-between mb-2">
-                                               <span>Rate:</span>
-                                               <span class="fw-medium" id="rate-display">₱{{ number_format($workspace->daily_rate) }} / day</span>
-                                           </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span style="color: #93BFCF;">Rate:</span>
+                            <span class="fw-medium" id="rate-display" style="color: #6096B4;">₱{{ number_format($workspace->daily_rate) }} / day</span>
+                        </div>
 
-                                           <hr>
+                        <hr style="border-color: #BDCDD6;">
 
-                                           <div class="d-flex justify-content-between mb-3">
-                                               <span class="fs-5 fw-bold">Total:</span>
-                                               <span class="fs-5 fw-bold" id="total-cost">₱0.00</span>
-                                           </div>
+                        <div class="d-flex justify-content-between mb-3">
+                            <span class="fs-5 fw-bold" style="color: #93BFCF;">Total:</span>
+                            <span class="fs-5 fw-bold" id="total-cost" style="color: #6096B4;">₱0.00</span>
+                        </div>
 
-                                           <button type="submit" form="bookingForm" class="btn btn-primary w-100">Confirm Booking</button>
-                                       </div>
-                                   </div>
-                               </div>
-                           </div>
-                       </div>
-                   @endsection
+                        <button type="submit" form="bookingForm" class="btn w-100" style="background-color: #6096B4; color: #EEE9DA;">
+                            <i class="bx bx-check-circle me-1"></i> Confirm Booking
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
 
                    @push('scripts')
                        <script>
