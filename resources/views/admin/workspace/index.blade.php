@@ -165,52 +165,16 @@
 
                     // Add this to the existing DOMContentLoaded function in admin/workspace/index.blade.php
 // Attach click handlers to all "Chat" buttons
-                    document.querySelectorAll('.chat-btn').forEach(button => {
-                        button.addEventListener('click', function() {
-                            const bookingId = this.dataset.bookingId;
-                            const workspaceName = this.dataset.workspaceName;
 
-                            Swal.fire({
-                                title: `Chat about ${workspaceName}`,
-                                html: `
-                <div class="text-start">
-                    <div class="chat-container p-2" style="height: 200px; overflow-y: auto; background: #f8f9fa; border-radius: 5px; border: 1px solid #dee2e6;">
-                        <p class="mb-2"><strong>System:</strong> <span class="text-muted">Welcome to support chat for booking #${bookingId}.</span></p>
-                        <p class="mb-2"><strong>System:</strong> <span class="text-muted">A support agent will respond shortly.</span></p>
-                    </div>
-                    <div class="mt-3">
-                        <textarea class="form-control" id="chat-message" rows="2" placeholder="Type your message here..."></textarea>
-                    </div>
-                </div>
-            `,
-                                showCancelButton: true,
-                                confirmButtonText: 'Send',
-                                cancelButtonText: 'Close',
-                                confirmButtonColor: '#28a745',
-                                cancelButtonColor: '#6c757d',
-                                allowOutsideClick: false,
-                                showLoaderOnConfirm: true,
-                                preConfirm: () => {
-                                    const message = document.getElementById('chat-message').value;
-                                    if (!message.trim()) {
-                                        Swal.showValidationMessage('Please enter a message');
-                                        return false;
-                                    }
-                                    return message;
-                                }
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    // Here you would normally send the message to your backend
-                                    // For now, just show a confirmation
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Message Sent',
-                                        text: 'Your message has been sent to support.',
-                                        timer: 2000,
-                                        showConfirmButton: false
-                                    });
-                                }
-                            });
+                    // Replace the existing chat-btn event handler with this code
+                    document.querySelectorAll('.chat-btn').forEach(button => {
+                        button.addEventListener('click', function(e) {
+                            e.preventDefault(); // Prevent any default action
+
+                            const groupChatId = this.dataset.groupChatId;
+
+                            // Redirect to the group chat page
+                            window.location.href = `{{ url('group-chats') }}/${groupChatId}`;
                         });
                     });
                 });

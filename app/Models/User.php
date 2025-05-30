@@ -20,6 +20,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'profile_image',
         'password',
     ];
 
@@ -48,5 +49,15 @@ class User extends Authenticatable
     public function bookings(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Booking::class);
+    }
+
+    /**
+     * Get the group chats that this user is a member of.
+     */
+    public function groupChats(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(GroupChat::class, 'group_chat_users')
+            ->withPivot('is_admin')
+            ->withTimestamps();
     }
 }

@@ -40,6 +40,12 @@
                                   <div data-i18n="My Workspaces">My Workspaces</div>
                               </a>
                           </li>
+<li class="menu-item {{ request()->routeIs('group-chats.index') ? 'active' : '' }}">
+    <a href="{{route('group-chats.index')}}" class="menu-link">
+        <i class="menu-icon tf-icons bx bx-chat"></i>
+        <div data-i18n="Group Chats">Group Chats</div>
+    </a>
+</li>
 
 
 

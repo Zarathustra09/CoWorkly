@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\GroupChatController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BookingController;
 use Illuminate\Support\Facades\Route;
@@ -27,3 +28,21 @@ Route::patch('/bookings/{booking}/status', [BookingController::class, 'updateSta
 
 // In routes/web.php
 Route::get('/my-workspaces', [App\Http\Controllers\WorkSpaceController::class, 'index'])->name('workspace.index');
+
+
+Route::get('group-chats/{groupChat}', [GroupChatController::class, 'show'])
+    ->name('group-chats.show');
+
+// Store a new message in the group chat
+Route::post('group-chats/{groupChat}/messages', [GroupChatController::class, 'store'])
+    ->name('group-chats.messages.store');
+
+// Add a user to the group chat (booking creator only)
+Route::post('group-chats/{groupChat}/users', [GroupChatController::class, 'add'])
+    ->name('group-chats.users.add');
+
+// Delete a message from the group chat
+Route::delete('group-chat-messages/{message}', [GroupChatController::class, 'delete'])
+    ->name('group-chats.messages.delete');
+
+Route::get('/chats', [GroupChatController::class, 'index'])->name('group-chats.index');

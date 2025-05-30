@@ -3,6 +3,7 @@
     namespace App\Http\Controllers;
 
     use App\Models\Booking;
+    use App\Models\GroupChat;
     use App\Models\WorkSpace;
     use App\Models\WorkSpaceCategory;
     use Illuminate\Http\Request;
@@ -67,6 +68,9 @@
             }
         }
 
+        /**
+         * Store a newly created booking in storage.
+         */
         /**
          * Store a newly created booking in storage.
          */
@@ -149,8 +153,21 @@
                 // Create the booking
                 $booking = auth()->user()->bookings()->create($validated);
 
-                Log::info('Booking created successfully', [
+                // Create a group chat for this booking automatically
+                $groupChat = GroupChat::create([
                     'booking_id' => $booking->id,
+                    'created_by' => auth()->id(),
+                    'name' => "Chat for {$workspace->name}"
+                ]);
+
+                // Add the booking creator as admin of the group chat
+                $groupChat->users()->attach(auth()->id(), [
+                    'is_admin' => true
+                ]);
+
+                Log::info('Booking created successfully with group chat', [
+                    'booking_id' => $booking->id,
+                    'group_chat_id' => $groupChat->id,
                     'user_id' => auth()->id(),
                     'workspace_id' => $validated['workspace_id'],
                     'final_start' => $validated['start_datetime'],

@@ -56,4 +56,13 @@
                 {
                     return $this->start_datetime->diffInDays($this->end_datetime) + 1;
                 }
+                // Add this to your existing Booking model
+
+                /**
+                 * Get the group chat associated with this booking.
+                 */
+                public function groupChat(): \Illuminate\Database\Eloquent\Relations\HasOne
+                {
+                    return $this->hasOne(GroupChat::class);
+                }
             }

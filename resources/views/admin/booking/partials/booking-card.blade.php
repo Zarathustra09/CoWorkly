@@ -51,24 +51,34 @@
                                                         <span class="fs-5 fw-bold">₱{{ number_format($booking->total_cost, 2) }}</span>
                                                     </div>
 
+                                                    <!-- Replace the current chat button code in admin/booking/partials/booking-card.blade.php -->
                                                     <div class="action-buttons d-grid gap-2">
-                                                        <a href="{{ route('bookings.show', $booking) }}"
-                                                           class="btn btn-outline-primary btn-sm booking-details-btn"
+                                                        @if($booking->groupChat)
+                                                        <a href="#"
+                                                           class="btn btn-outline-primary btn-sm chat-btn"
                                                            data-booking-id="{{ $booking->id }}"
-                                                           data-workspace-name="{{ $booking->workspace->name }}"
-                                                           data-booking-date="{{ $booking->start_datetime->format('M d, Y') }} {{ $booking->start_datetime->format('Y-m-d') != $booking->end_datetime->format('Y-m-d') ? ' - '.$booking->end_datetime->format('M d, Y') : '' }}"
-                                                           data-booking-type="{{ ucfirst($booking->booking_type) }}"
-                                                           data-booking-status="{{ $booking->status }}"
-                                                           data-booking-cost="{{ number_format($booking->total_cost, 2) }}">
-                                                            <i class="bi bi-eye"></i> Details
+                                                           data-group-chat-id="{{ $booking->groupChat->id }}"
+                                                           data-workspace-name="{{ $booking->workspace->name }}">
+                                                            <i class="bi bi-chat-dots"></i> Chat
                                                         </a>
+                                                        @else
+                                                        <button type="button"
+                                                               class="btn btn-outline-secondary btn-sm"
+                                                               disabled
+                                                               title="Chat not available">
+                                                            <i class="bi bi-chat-dots"></i> Chat Unavailable
+                                                        </button>
+                                                        @endif
 
+                                                        <!-- Remove this duplicate chat button -->
+                                                        <!--
                                                         <button type="button"
                                                                class="btn btn-outline-info btn-sm chat-btn"
                                                                data-booking-id="{{ $booking->id }}"
                                                                data-workspace-name="{{ $booking->workspace->name }}">
                                                             <i class="bi bi-chat-dots"></i> Chat
                                                         </button>
+                                                        -->
 
                                                         @if($booking->status === 'pending')
                                                             <a href="{{ route('checkout.show', $booking) }}" class="btn btn-success btn-sm">
