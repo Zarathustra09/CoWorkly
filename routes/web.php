@@ -42,6 +42,9 @@ Route::post('group-chats/{groupChat}/messages', [GroupChatController::class, 'st
 Route::post('group-chats/{groupChat}/users', [GroupChatController::class, 'add'])
     ->name('group-chats.users.add');
 
+
+Route::post('group-chats/{groupChat}/users/remove', [GroupChatController::class, 'remove'])->name('group-chats.users.remove');
+
 // Delete a message from the group chat
 Route::delete('group-chat-messages/{message}', [GroupChatController::class, 'delete'])
     ->name('group-chats.messages.delete');

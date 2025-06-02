@@ -3,12 +3,14 @@
     <div class="container">
         <div class="row">
 
-            <div class="col-lg-3 col-12 mb-4 pb-2">
-                <a class="navbar-brand mb-2" href="index.html">
-                    <i class="bi-back"></i>
-                    <span>{{env('APP_NAME')}}</span>
-                </a>
-            </div>
+          <div class="col-lg-3 col-12 mb-4 pb-2">
+              <a class="navbar-brand mb-2" href="index.html">
+                  <span class="app-brand-logo">
+                      <img src="{{ asset('coworkly.png') }}" alt="{{env('APP_NAME')}} Logo" width="75">
+                  </span>
+                  <span class="app-brand-text fw-bolder ms-2">{{env('APP_NAME')}}</span>
+              </a>
+          </div>
 
             <div class="col-lg-3 col-md-4 col-6">
                 <h6 class="site-footer-title mb-3">Resources</h6>
@@ -61,9 +63,6 @@
                         <li><button class="dropdown-item" type="button">Arabic</button></li>
                     </ul>
                 </div>
-
-                <p class="copyright-text mt-lg-5 mt-4">Copyright © 2025 {{env('APP_NAME')}} Listing Center. All rights reserved.
-                    <br><br>Design: <a rel="nofollow" href="https://templatemo.com" target="_blank">TemplateMo</a> Distribution <a href="https://themewagon.com">ThemeWagon</a></p>
 
             </div>
 

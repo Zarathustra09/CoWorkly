@@ -170,86 +170,137 @@ class GroupChatController extends Controller
     /**
      * Add a new user to the group chat (only allowed for booking creator).
      */
-   public function add(Request $request, GroupChat $groupChat)
-   {
-       try {
-           $request->validate([
-               'user_id' => 'required|exists:users,id',
-           ]);
+  public function add(Request $request, GroupChat $groupChat)
+  {
+      try {
+          $request->validate([
+              'user_id' => 'required|exists:users,id',
+          ]);
 
-           $booking = $groupChat->booking;
+          $booking = $groupChat->booking;
 
-           // Only the booking creator can add users
-           if (Auth::id() !== $booking->user_id) {
-               if ($request->expectsJson()) {
-                   return response()->json([
-                       'success' => false,
-                       'message' => 'Only the booking creator can add users to this chat.'
-                   ], 403);
-               }
+          // Only the booking creator can add users
+          if (Auth::id() !== $booking->user_id) {
+              return response()->json([
+                  'success' => false,
+                  'message' => 'Only the booking creator can add users to this chat.'
+              ], 403);
+          }
 
-               return back()->with('error', 'Only the booking creator can add users to this chat.');
-           }
+          // Get the user to add
+          $userToAdd = User::find($request->user_id);
 
-           // Get the user to add
-           $userToAdd = User::find($request->user_id);
+          // Check if user already in the chat
+          if ($groupChat->hasUser($userToAdd)) {
+              return response()->json([
+                  'success' => false,
+                  'message' => 'User is already in this chat.'
+              ], 400);
+          }
 
-           // Check if user already in the chat
-           if ($groupChat->hasUser($userToAdd)) {
-               if ($request->expectsJson()) {
-                   return response()->json([
-                       'success' => false,
-                       'message' => 'User is already in this chat.'
-                   ], 400);
-               }
+          // Add the user
+          $groupChat->users()->attach($userToAdd->id, [
+              'is_admin' => false
+          ]);
 
-               return back()->with('warning', 'User is already in this chat.');
-           }
+          Log::info('User added to group chat', [
+              'group_chat_id' => $groupChat->id,
+              'added_user_id' => $userToAdd->id,
+              'added_by' => Auth::id()
+          ]);
 
-           // Add the user
-           $groupChat->users()->attach($userToAdd->id, [
-               'is_admin' => false
-           ]);
+          return response()->json([
+              'success' => true,
+              'message' => "{$userToAdd->name} has been added to the chat.",
+              'user' => [
+                  'id' => $userToAdd->id,
+                  'name' => $userToAdd->name
+              ]
+          ]);
 
-           Log::info('User added to group chat', [
-               'group_chat_id' => $groupChat->id,
-               'added_user_id' => $userToAdd->id,
-               'added_by' => Auth::id()
-           ]);
+      } catch (\Exception $e) {
+          Log::error('Error adding user to group chat: ' . $e->getMessage(), [
+              'file' => $e->getFile(),
+              'line' => $e->getLine(),
+              'group_chat_id' => $groupChat->id,
+              'user_id' => Auth::id()
+          ]);
 
-           if ($request->expectsJson()) {
-               return response()->json([
-                   'success' => true,
-                   'message' => "{$userToAdd->name} has been added to the chat.",
-                   'user' => [
-                       'id' => $userToAdd->id,
-                       'name' => $userToAdd->name
-                   ]
-               ]);
-           }
+          return response()->json([
+              'success' => false,
+              'message' => 'Unable to add user to the chat. Please try again later.'
+          ], 500);
+      }
+  }
 
-           return redirect()->route('group-chats.show', $groupChat)
-               ->with('success', "{$userToAdd->name} has been added to the chat.");
 
-       } catch (\Exception $e) {
-           Log::error('Error adding user to group chat: ' . $e->getMessage(), [
-               'file' => $e->getFile(),
-               'line' => $e->getLine(),
-               'group_chat_id' => $groupChat->id,
-               'user_id' => Auth::id()
-           ]);
+    /**
+     * Remove a user from the group chat (only allowed for booking creator).
+     */
+    public function remove(Request $request, GroupChat $groupChat)
+    {
+        try {
+            $request->validate([
+                'user_id' => 'required|exists:users,id',
+            ]);
 
-           if ($request->expectsJson()) {
-               return response()->json([
-                   'success' => false,
-                   'message' => 'Unable to add user to the chat. Please try again later.'
-               ], 500);
-           }
+            $booking = $groupChat->booking;
 
-           return back()
-               ->with('error', 'Unable to add user to the chat. Please try again later.');
-       }
-   }
+            // Only the booking creator can remove users
+            if (Auth::id() !== $booking->user_id) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Only the booking creator can remove users from this chat.'
+                ], 403);
+            }
+
+            // Get the user to remove
+            $userToRemove = User::find($request->user_id);
+
+            // Check if user is in the chat
+            if (!$groupChat->hasUser($userToRemove)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'User is not in this chat.'
+                ], 400);
+            }
+
+            // Can't remove yourself
+            if ($userToRemove->id === Auth::id()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You cannot remove yourself from the chat.'
+                ], 400);
+            }
+
+            // Remove the user
+            $groupChat->users()->detach($userToRemove->id);
+
+            Log::info('User removed from group chat', [
+                'group_chat_id' => $groupChat->id,
+                'removed_user_id' => $userToRemove->id,
+                'removed_by' => Auth::id()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => "{$userToRemove->name} has been removed from the chat.",
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error removing user from group chat: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'group_chat_id' => $groupChat->id,
+                'user_id' => Auth::id()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Unable to remove user from the chat. Please try again later.'
+            ], 500);
+        }
+    }
 
     /**
      * Delete a message from the group chat.

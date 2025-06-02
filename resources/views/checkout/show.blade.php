@@ -101,7 +101,7 @@
                                                     <li>Enter the reference number below</li>
                                                 </ol>
                                                 <div class="text-center my-3">
-                                                    <img src="https://via.placeholder.com/150x150.png?text=GCash+QR" alt="GCash QR" class="img-fluid" style="max-width: 150px;">
+                                                    <img src="{{asset('images/rickrollqr.png')}}" alt="GCash QR" class="img-fluid" style="max-width: 150px;">
                                                 </div>
                                             </div>
 
@@ -115,7 +115,7 @@
                                                     <li>Enter the reference number below</li>
                                                 </ol>
                                                 <div class="text-center my-3">
-                                                    <img src="https://via.placeholder.com/150x150.png?text=PayMaya+QR" alt="PayMaya QR" class="img-fluid" style="max-width: 150px;">
+                                                    <img src="{{asset('images/rickrollqr.png')}}" alt="PayMaya QR" class="img-fluid" style="max-width: 150px;">
                                                 </div>
                                             </div>
                                         </div>

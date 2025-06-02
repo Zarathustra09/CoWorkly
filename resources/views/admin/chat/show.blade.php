@@ -17,28 +17,30 @@
                                                                 @endif
                                                             </div>
                                                             <div class="card-body p-0" style="background-color: #EEE9DA;">
-                                                                <ul class="list-group list-group-flush">
-                                                                    @foreach($chatUsers as $chatUser)
-                                                                        <li class="list-group-item d-flex align-items-center" style="background-color: #EEE9DA; border-color: #BDCDD6;">
-                                                                            @if($chatUser->profile_image)
-                                                                                <img src="{{ asset('storage/' . $chatUser->profile_image) }}"
-                                                                                     class="rounded-circle me-2" width="32" height="32" alt="{{ $chatUser->name }}">
-                                                                            @else
-                                                                                <div class="rounded-circle d-flex align-items-center justify-content-center me-2"
-                                                                                     style="width: 32px; height: 32px; background-color: #BDCDD6; color: #6096B4;">
-                                                                                    {{ substr($chatUser->name, 0, 1) }}
-                                                                                </div>
-                                                                            @endif
-
-                                                                            <div style="color: #6096B4;">
-                                                                                {{ $chatUser->name }}
-                                                                                @if($groupChat->isAdmin($chatUser))
-                                                                                    <span class="badge ms-1" style="background-color: #93BFCF; color: #EEE9DA;">Admin</span>
-                                                                                @endif
+                                                            <ul class="list-group list-group-flush">
+                                                                @foreach($chatUsers as $chatUser)
+                                                                    <li class="list-group-item d-flex align-items-center"
+                                                                        style="background-color: #EEE9DA; border-color: #BDCDD6;"
+                                                                        data-user-id="{{ $chatUser->id }}">
+                                                                        @if($chatUser->profile_image)
+                                                                            <img src="{{ asset('storage/' . $chatUser->profile_image) }}"
+                                                                                 class="rounded-circle me-2" width="32" height="32" alt="{{ $chatUser->name }}">
+                                                                        @else
+                                                                            <div class="rounded-circle d-flex align-items-center justify-content-center me-2"
+                                                                                 style="width: 32px; height: 32px; background-color: #BDCDD6; color: #6096B4;">
+                                                                                {{ substr($chatUser->name, 0, 1) }}
                                                                             </div>
-                                                                        </li>
-                                                                    @endforeach
-                                                                </ul>
+                                                                        @endif
+
+                                                                        <div style="color: #6096B4;">
+                                                                            {{ $chatUser->name }}
+                                                                            @if($groupChat->isAdmin($chatUser))
+                                                                                <span class="badge ms-1" style="background-color: #93BFCF; color: #EEE9DA;">Admin</span>
+                                                                            @endif
+                                                                        </div>
+                                                                    </li>
+                                                                @endforeach
+                                                            </ul>
                                                             </div>
                                                         </div>
 
@@ -331,32 +333,35 @@
                                                                 confirmButtonColor: '#6096B4',
                                                                 cancelButtonColor: '#BDCDD6',
                                                                 showLoaderOnConfirm: true,
-                                                                preConfirm: () => {
-                                                                    const selectedUserId = document.getElementById('user-select').value;
-                                                                    if (!selectedUserId) {
-                                                                        Swal.showValidationMessage('Please select a user');
-                                                                        return false;
-                                                                    }
+                                                          // Replace the preConfirm function in your addUserBtn event listener with this:
+                                                          preConfirm: () => {
+                                                              const selectedUserId = document.getElementById('user-select').value;
+                                                              if (!selectedUserId) {
+                                                                  Swal.showValidationMessage('Please select a user');
+                                                                  return false;
+                                                              }
 
-                                                                    // Send AJAX request to add the user
-                                                                    return fetch('{{ route('group-chats.users.add', $groupChat) }}', {
-                                                                        method: 'POST',
-                                                                        headers: {
-                                                                            'Content-Type': 'application/json',
-                                                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                                                                        },
-                                                                        body: JSON.stringify({ user_id: selectedUserId })
-                                                                    })
-                                                                        .then(response => {
-                                                                            if (!response.ok) {
-                                                                                throw new Error('Failed to add user');
-                                                                            }
-                                                                            return response.json();
-                                                                        })
-                                                                        .catch(error => {
-                                                                            Swal.showValidationMessage(`Request failed: ${error.message}`);
-                                                                        });
-                                                                },
+                                                              // Send AJAX request to add the user
+                                                              return fetch('{{ route('group-chats.users.add', $groupChat) }}', {
+                                                                  method: 'POST',
+                                                                  headers: {
+                                                                      'Content-Type': 'application/json',
+                                                                      'Accept': 'application/json',
+                                                                      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                                                                  },
+                                                                  body: JSON.stringify({ user_id: selectedUserId })
+                                                              })
+                                                              .then(response => {
+                                                                  if (!response.ok) {
+                                                                      return response.json().then(err => {
+                                                                          throw new Error(err.message || 'Failed to add user');
+                                                                      }).catch(() => {
+                                                                          throw new Error('Failed to add user. Server returned an invalid response.');
+                                                                      });
+                                                                  }
+                                                                  return response.json();
+                                                              });
+                                                          },
                                                                 allowOutsideClick: () => !Swal.isLoading()
                                                             }).then((result) => {
                                                                 if (result.isConfirmed) {
@@ -374,6 +379,98 @@
                                                             });
                                                         });
                                                     }
+
+                                                    // Add this inside your document ready function in show.blade.php
+// Find where you set up the addUserBtn functionality and add this code below it
+
+// Add remove buttons to each chat member
+                                                    const chatMembersList = document.querySelector('.list-group-flush');
+                                                    if (chatMembersList) {
+                                                        const isBookingCreator = {{ Auth::id() === $booking->user_id ? 'true' : 'false' }};
+
+                                                        if (isBookingCreator) {
+                                                            document.querySelectorAll('.list-group-item').forEach(item => {
+                                                                const userId = item.getAttribute('data-user-id');
+                                                                const userName = item.querySelector('div').textContent.trim().split('\n')[0].trim();
+
+                                                                // Don't add remove button for the current user/admin
+                                                                if (userId != {{ Auth::id() }}) {
+                                                                    const removeBtn = document.createElement('button');
+                                                                    removeBtn.className = 'btn btn-sm text-danger ms-auto remove-user-btn';
+                                                                    removeBtn.innerHTML = '<i class="bx bx-x"></i>';
+                                                                    removeBtn.setAttribute('data-user-id', userId);
+                                                                    removeBtn.setAttribute('data-user-name', userName);
+                                                                    removeBtn.style.backgroundColor = 'transparent';
+                                                                    removeBtn.style.border = 'none';
+
+                                                                    item.appendChild(removeBtn);
+                                                                }
+                                                            });
+                                                        }
+
+                                                        // Setup event listeners for remove buttons
+                                                        document.querySelectorAll('.remove-user-btn').forEach(btn => {
+                                                            btn.addEventListener('click', function(e) {
+                                                                e.preventDefault();
+                                                                const userId = this.getAttribute('data-user-id');
+                                                                const userName = this.getAttribute('data-user-name');
+
+                                                                Swal.fire({
+                                                                    title: 'Remove User',
+                                                                    text: `Are you sure you want to remove ${userName} from this chat?`,
+                                                                    icon: 'warning',
+                                                                    showCancelButton: true,
+                                                                    confirmButtonColor: '#6096B4',
+                                                                    cancelButtonColor: '#BDCDD6',
+                                                                    confirmButtonText: 'Yes, remove'
+                                                                }).then((result) => {
+                                                                    if (result.isConfirmed) {
+                                                                        // Send AJAX request to remove the user
+                                                                        fetch('{{ route('group-chats.users.remove', $groupChat) }}', {
+                                                                            method: 'POST',
+                                                                            headers: {
+                                                                                'Content-Type': 'application/json',
+                                                                                'Accept': 'application/json',
+                                                                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                                                                            },
+                                                                            body: JSON.stringify({ user_id: userId })
+                                                                        })
+                                                                            .then(response => {
+                                                                                if (!response.ok) {
+                                                                                    return response.json().then(err => {
+                                                                                        throw new Error(err.message || 'Failed to remove user');
+                                                                                    });
+                                                                                }
+                                                                                return response.json();
+                                                                            })
+                                                                            .then(data => {
+                                                                                if (data.success) {
+                                                                                    Swal.fire({
+                                                                                        title: 'Success!',
+                                                                                        text: data.message,
+                                                                                        icon: 'success',
+                                                                                        timer: 2000,
+                                                                                        showConfirmButton: false
+                                                                                    }).then(() => {
+                                                                                        // Reload page to update the user list
+                                                                                        window.location.reload();
+                                                                                    });
+                                                                                }
+                                                                            })
+                                                                            .catch(error => {
+                                                                                Swal.fire({
+                                                                                    icon: 'error',
+                                                                                    title: 'Error',
+                                                                                    text: error.message
+                                                                                });
+                                                                            });
+                                                                    }
+                                                                });
+                                                            });
+                                                        });
+                                                    }
+
+
                                                 });
                                             </script>
                                         @endpush

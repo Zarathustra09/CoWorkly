@@ -175,8 +175,8 @@
                 ]);
 
                 // Redirect to checkout instead of booking.show
-                return redirect()->route('checkout.show', $booking)
-                    ->with('success', 'Booking created! Please complete payment to confirm.');
+                // Replace this line in the store method of BookingController
+                return redirect()->route('checkout.show', $booking);
 
             } catch (\Exception $e) {
                 Log::error('Error creating booking: ' . $e->getMessage(), [
